@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoplytics Hub — Setup Your Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'app_name/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .setup-wrapper {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        /* Brand */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+        .brand-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .brand-logo span { color: #0d6efd; }
+        .brand-header p {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* Steps */
+        .steps-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.6rem;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .step-circle {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700;
+        }
+        .step.done  .step-circle { background: #198754; color: #fff; }
+        .step.active .step-circle { background: #0d6efd; color: #fff; }
+        .step.inactive .step-circle { background: #e9ecef; color: #adb5bd; }
+        .step-label { font-size: 0.68rem; font-weight: 600; color: #adb5bd; }
+        .step.done .step-label   { color: #198754; }
+        .step.active .step-label { color: #0d6efd; }
+        .step-line { width: 60px; height: 2px; background: #e9ecef; margin-bottom: 20px; }
+        .step-line.done { background: #198754; }
+
+        /* Card */
+        .setup-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        /* Welcome */
+        .welcome-banner {
+            background: #f0f5ff;
+            border: 1px solid #d0e0ff;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+        .welcome-banner .avatar {
+            width: 38px; height: 38px;
+            background: #0d6efd;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.95rem; flex-shrink: 0;
+        }
+        .welcome-banner h6 { font-weight: 700; font-size: 0.88rem; color: #1a1a2e; margin: 0; }
+        .welcome-banner p  { font-size: 0.77rem; color: #6c757d; margin: 0; }
+
+        /* Header */
+        .step-badge {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #0d6efd;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+        .setup-card h3 { font-size: 1.3rem; font-weight: 800; color: #1a1a2e; margin: 0 0 4px; }
+        .setup-card .card-sub { font-size: 0.83rem; color: #6c757d; margin-bottom: 1.4rem; }
+
+        /* Divider */
+        .section-divider {
+            display: flex; align-items: center; gap: 10px;
+            margin: 1.2rem 0 0.9rem;
+        }
+        .section-divider span {
+            font-size: 0.68rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: #adb5bd; white-space: nowrap;
+        }
+        .section-divider::before, .section-divider::after {
+            content: ''; flex: 1; height: 1px; background: #e9ecef;
+        }
+
+        /* Inputs */
+        .form-group { margin-bottom: 0.9rem; }
+        .form-label-custom {
+            font-size: 0.78rem; font-weight: 600;
+            color: #495057; margin-bottom: 5px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .form-label-custom i { color: #0d6efd; font-size: 0.72rem; }
+        .required-star { color: #dc3545; }
+        .optional-tag {
+            font-size: 0.62rem; background: #f8f9fa;
+            color: #adb5bd; border-radius: 4px;
+            padding: 1px 6px; border: 1px solid #e9ecef;
+        }
+
+        .input-wrapper { position: relative; }
+        .input-icon {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd; font-size: 0.8rem; pointer-events: none;
+            transition: color 0.2s;
+        }
+        .input-wrapper:focus-within .input-icon { color: #0d6efd; }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            border: 1.5px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: #212529;
+            background: #fff;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-control-custom::placeholder { color: #ced4da; }
+        .form-control-custom:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+        }
+        textarea.form-control-custom {
+            padding-top: 0.6rem;
+            resize: vertical; min-height: 76px;
+        }
+
+        /* Alerts */
+        .alert-custom {
+            border-radius: 8px; padding: 0.7rem 1rem;
+            font-size: 0.83rem; margin-bottom: 1rem;
+        }
+        .alert-error   { background: #fff5f5; color: #dc3545; border: 1px solid #f5c6cb; }
+        .alert-success { background: #f0fff4; color: #198754; border: 1px solid #a3d9a5; }
+
+        /* Button */
+        .btn-setup {
+            width: 100%;
+            padding: 0.82rem;
+            background: #0d6efd;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center;
+            justify-content: center; gap: 8px;
+            margin-top: 1.3rem;
+        }
+        .btn-setup:hover { background: #0b5ed7; transform: translateY(-1px); }
+
+        /* Skip */
+        .skip-link {
+            text-align: center; margin-top: 1rem;
+            font-size: 0.8rem; color: #adb5bd;
+        }
+        .skip-link a { color: #6c757d; text-decoration: none; font-weight: 600; }
+        .skip-link a:hover { color: #0d6efd; }
+    </style>
+</head>
+<body>
+
+<div class="setup-wrapper">
+
+    <!-- Brand -->
+    <div class="brand-header">
+        <div class="brand-logo">Shoplytics<span>Hub</span></div>
+        <p>Simple reports for every shop owner</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-bar">
+        <div class="step done">
+            <div class="step-circle"><i class="fas fa-check"></i></div>
+            <span class="step-label">Register</span>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step active">
+            <div class="step-circle">2</div>
+            <span class="step-label">Shop Setup</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step inactive">
+            <div class="step-circle">3</div>
+            <span class="step-label">Dashboard</span>
+        </div>
+    </div>
+
+    <!-- Card -->
+    <div class="setup-card">
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert-custom {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} me-2"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Welcome -->
+        <div class="welcome-banner">
+            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div>
+                <h6>Welcome, {{ request.user.username }}! 👋</h6>
+                <p>Let's set up your shop so we can show you the right reports.</p>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="step-badge">Step 2 of 3</div>
+        <h3>Set Up Your Shop</h3>
+        <p class="card-sub">Fill in your details below. You can always change these later from your profile.</p>
+
+        <!-- Form -->
+        <form method="POST" action="{% url 'shop_setup' %}">
+            {% csrf_token %}
+
+            <div class="section-divider"><span>Shop Information</span></div>
+
+            <div class="form-group">
+                <label class="form-label-custom">
+                    <i class="fas fa-store"></i> Shop Name <span class="required-star">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-store input-icon"></i>
+                    <input type="text" name="shop_name" class="form-control-custom"
+                           placeholder="e.g. Krishna General Store"
+                           value="{{ request.POST.shop_name }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label-custom">
+                    <i class="fas fa-user-tie"></i> Owner Name <span class="required-star">*</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user-tie input-icon"></i>
+                    <input type="text" name="owner_name" class="form-control-custom"
+                           placeholder="e.g. Ramesh Patel"
+                           value="{{ request.POST.owner_name }}" required>
+                </div>
+            </div>
+
+            <div class="section-divider">
+                <span>Contact Details &nbsp;<span class="optional-tag">Optional</span></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label-custom">
+                    <i class="fas fa-phone"></i> Phone Number <span class="optional-tag">Optional</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone input-icon"></i>
+                    <input type="tel" name="phone" class="form-control-custom"
+                           placeholder="e.g. +91 98765 43210"
+                           value="{{ request.POST.phone }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label-custom">
+                    <i class="fas fa-map-marker-alt"></i> Shop Address <span class="optional-tag">Optional</span>
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt input-icon" style="top:16px; transform:none;"></i>
+                    <textarea name="address" class="form-control-custom"
+                              placeholder="e.g. Shop No. 5, Main Market, Bhayandar (W), Thane - 401101">{{ request.POST.address }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-setup">
+                <i class="fas fa-arrow-right"></i> Go to My Dashboard
+            </button>
+        </form>
+
+        <div class="skip-link">
+            <a href="{% url 'login' %}">Skip for now</a>
+            &nbsp;—&nbsp; You can fill this in later from your profile
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
