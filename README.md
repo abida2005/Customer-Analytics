@@ -87,10 +87,6 @@ A machine-learning model is used to identify customers who may be at risk of chu
 
 Cohort analysis is used to study customer retention and purchasing behavior over time.
 
-## 🖥️ Screenshots
-
-Screenshots of the application will be added here.
-
 ## 📁 Project Structure
 
 ```text
